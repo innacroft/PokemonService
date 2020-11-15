@@ -13,7 +13,7 @@ This application creates and shows avaliable Pokemons grouped by Pokemon Evoluti
 ## Features
 On console using django custom command, shows name, base stats( Hp, Weight, Height, Attack, Deffense, Special attack ,Special deffense  and Speed), related  to any Pokemon, adittionally shows Evolution representation graphically , Id chain evolution and show if a Pokemon is a baby or not. 
  
-The command created on django application is **pokemons** and recieve 2 parameters : the **main action** (create or search) and the **ID** of Evolution Chain.
+The command created on django application is **pokemons** and recieve 2 parameters : the **main action** (create or search) and the **ID** of Evolution Chain (see Evolution Chains on https://pokeapi.co/docs/v2 ).
 
 -Command **create** -->create pokemons related to an specific Evolution Chain on local database , adittionally created data is showed on command line:
 
