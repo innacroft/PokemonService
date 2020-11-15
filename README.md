@@ -27,6 +27,12 @@ The command created on django application is **pokemons** and recieve 2 paramete
 |--|--|--|--|--|--|--|--|--|--|--|--|--|
 | 172 |  pichu  | 20 |  2.0 kg | 0.3 m  |   40   |    15   |       35       |        35       |   60  |   Yes    |  pichu---> pikachu---> raichu |         10         |
 |  25 | pikachu | 35 |  6.0 kg | 0.4 m  |   55   |    40   |       50       |        50       |   90  |    No    |  pichu---> pikachu---> raichu |         10         |
-|  26 |  raichu | 60 | 30.0 kg | 0.8 m  |   90   |    55   |       90       |        80       |  110  |    No    |  pichu---> pikachu---> raichu |         10       
+|  26 |  raichu | 60 | 30.0 kg | 0.8 m  |   90   |    55   |       90       |        80       |  110  |    No    |  pichu---> pikachu---> raichu |         10         |
+
+|Evolution list |
+|--|
+|pichu---> pikachu---> raichu|
+
+
 
 
