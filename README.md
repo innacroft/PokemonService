@@ -1,16 +1,28 @@
 
 # POKEMON API INTEGRATION
 ![Ya disponible el Pikachu con la gorra de Ash en la temporada de Hoenn |  Pokémon Alpha](https://pokemonalpha.xyz/wp-content/uploads/2020/10/pikachu-gorra-hoenn.jpg)
+
 Consumed Pokemon API avaliable on  https://pokeapi.co/docs/v2 
 This application creates and shows avaliable Pokemons grouped by Pokemon Evolution Chain, gets main details for each Pokemon and shows evolution chains for each Pokemon via console on python-django.
 
 ## Technologies:
  1. Postgresql 
  2. Docker
- 3.  Python
+ 3. Python
  4. Gunicorn
  5. Django-rest-framework
- 
+
+## Usage
+Only dev enviroment is avaliable, by default is assigned, you can run the project using:
+
+
+    docker-compose build
+    docker-compose up 
+
+For using commands inside docker, once all images are running, you can execute follow command:
+
+    docker exec -it pokemon_web_1 /bin/sh
+    
 ## Features
  1. Custom Command
 
@@ -44,6 +56,8 @@ The command created on django application is **pokemons** and recieve 2 paramete
 > `http://localhost:8000/pokemon/bulbasaur/`
 
 If Pokemon doesn't exists on database an error is throw, you can create the pokemon by evolution chain using create command of the 1th part. 
+
+
 
 
 
