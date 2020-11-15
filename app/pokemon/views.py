@@ -21,72 +21,111 @@ class Create_get_pokemon:
         url='https://pokeapi.co/api/v2/evolution-chain/'+str(self.id) +'/'
         response = requests.get(url)
         self.name_list=[]
+        self.len=0
+        self.val2=''
+        self.count=0
+        self.count2=0
+        self.evolution={}
+        self.items_=[]
+        self.last_value=''
+        self.t = PrettyTable(['Id', 'Name','HP', 'Weight','Height', 'Attack','Defense',
+            'Special_attack','Special defense', 'Speed','Is Baby?',  'Id Chain evolution']) 
+        self.t2 = PrettyTable(['Evolution list']) 
         if response.status_code == 200:
             data=response.json()
-            self.chain_id=data['id']
-            Evolution.objects.get_or_create(id=self.chain_id)
-            self.recursive_(data['chain'])  #get all info of each evolution including names of each pokemon
-            self.get_pokemon_data(self.name_list) #get data of each pokemon by name and save it
+            self.chain_id=data['id'] #chain evolution
+            self.recursive_(data['chain'],'')  #get all info of each evolution including names of each pokemon
+            print(self.t)
+            
+            counter=0
+            for key, val in self.evolution.items():
+                evol=str(val).replace(',','--->').replace('[',' ').replace(']','').replace('\'','')
+                self.t2.add_row([evol])
+                counter+=1
+            print(self.t2)
         else:
             print('--> Ops !, Something went wrong with request, Error No:',response.status_code)
-        #return response.json()
 
-    def recursive_(self,values):
+
+    def recursive_(self,values,before_value):
+        
         for key, value in values.items():
-            if key=='species':
-                name=[ v for k, v in value.items() if k == 'name']
-                self.name_list.insert(0,name[0])
-            if key=='evolves_to':
-                for val1 in value:
-                    self.recursive_(val1)
-    
-    def get_pokemon_data(self, name_list):
+            self.is_baby=False
 
+            if key=='evolution_details':
+                pass
+            if key=='evolves_to':
+                self.len=len(value)
+                self.val2=value
+            if key=='species':
+                id_=self.get_save_data_pokemon(value['name'])
+                self.insert_dependencies(id_,before_value)
+                if len(self.items_) > 0:
+                    length= len(self.items_)
+                    self.last_value=str(self.items_[-1])
+                if self.last_value == before_value:
+                    self.items_.append(value['name'])
+                    self.evolution[str(self.count2)]=self.items_ 
+                else:
+                    new_items=self.items_.copy()
+                    new_items.pop()
+                    new_items.append(value['name'])
+                    self.evolution[str(self.count2)+str(self.count2)]=new_items
+                    self.count2+=1
+                self.count+=1
+                
+        if self.len != 0:
+            for val1 in self.val2:
+                self.recursive_(val1,before_value=value['name'])
+
+    def insert_dependencies(self, id_, before_value): #dependencies of pokemon evolutions
+        if self.create:
+            if before_value:
+                id_pok=Pokemon.objects.get(name=before_value)  
+                Evolution.objects.get_or_create(id_chain=self.chain_id,pokemon=id_pok,evolves_to=id_)
+
+    def get_save_data_pokemon(self, name_pokemon):
+        
         hp,attack,defense,special_attack,special_defense,speed=0,0,0,0,0,0
         width,weight=0.0,0.0
         is_baby_=False
         index_=-1
         name,baby= '',''
+        
+        url='https://pokeapi.co/api/v2/pokemon/'+str(name_pokemon)+'/'
+        response = requests.get(url)
+        data=response.json()
+        if data['weight']: weight = data['weight']/10
+        if data['height']: height = data['height']/10
+        for stat in data['stats']:
+            s=stat['stat']
+            name=data['name'] 
+            id_=data['id']
+            if s['name']=='hp': hp = stat['base_stat'] 
+            if s['name']=='attack': attack = stat['base_stat']
+            if s['name']=='defense': defense = stat['base_stat']
+            if s['name']=='special-attack': special_attack = stat['base_stat']
+            if s['name']=='special-defense': special_defense = stat['base_stat']
+            if s['name']=='speed': speed = stat['base_stat']
+        if self.count==0:
+            is_baby_=True
+            baby='Yes'
+        else:
+            is_baby_=False
+            baby='No'
+        if self.create:
+            Pokemon.objects.get_or_create(pokemon=id_, 
+            is_baby=is_baby_, name= name, hp=hp, 
+            attack=attack,weight=weight, height=height,
+            defense=defense,speed=speed, special_attack=special_attack, 
+            special_defense=special_defense)
+        else:
+            pass
+        self.t.add_row([id_,name,hp,str(weight)+ ' kg',str(height)+' m',attack,defense,special_attack,special_defense,speed,baby,self.chain_id])
+        return id_
 
-        t = PrettyTable(['Id', 'Name','HP', 'Weight','Height', 'Attack','Defense',
-            'Special_attack','Special defense', 'Speed','Is Baby?', 'Evolution', 'Id Chain evolution'])
-        for value in self.name_list:
-            url='https://pokeapi.co/api/v2/pokemon/'+str(value)+'/'
-            response = requests.get(url)
-            data=response.json()
 
-            if data['weight']: weight = data['weight']/10
-            if data['height']: height = data['height']/10
-            for stat in data['stats']:
-                s=stat['stat']
-                name=data['name'] 
-                id_=data['id']
-                if s['name']=='hp': hp = stat['base_stat'] 
-                if s['name']=='attack': attack = stat['base_stat']
-                if s['name']=='defense': defense = stat['base_stat']
-                if s['name']=='special-attack': special_attack = stat['base_stat']
-                if s['name']=='special-defense': special_defense = stat['base_stat']
-                if s['name']=='speed': speed = stat['base_stat']
-            index_=self.name_list.index(name)
-            if index_ == 0:
-                is_baby_=True
-                baby='Yes'
-            else:
-                is_baby_=False
-                baby='No'
-            evol=str(self.name_list).replace(',','--->').replace('[',' ').replace(']','').replace('\'','')
-            if self.create:
-                obj= Evolution.objects.get(pk =self.chain_id )
-                try:
-                    Pokemon.objects.get(pokemon=id_).delete()
-                except Exception as e:
-                    Pokemon.objects.get_or_create(pokemon=id_,evolution=obj,
-                        order=index_,is_baby=is_baby_, name= name, hp=hp, attack=attack,weight=weight, height=height,
-                        defense=defense,speed=speed, special_attack=special_attack, special_defense=special_defense,evolution_graph=evol)
-            else:
-                pass
-            t.add_row([id_,name,hp,str(weight)+ ' kg',str(height)+' m',attack,defense,special_attack,special_defense,speed,baby,evol,self.chain_id])
-        print(t)
+
 
 
 
