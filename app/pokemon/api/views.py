@@ -1,24 +1,26 @@
-from pokemon.models import Pokemon,Evolution
-from rest_framework import viewsets
-from rest_framework import permissions
-from .serializers import PokemonSerializer
-from rest_framework import generics
-
-
-class PokemonDetails(generics.ListAPIView):
+from rest_framework.views import APIView
+from django.http import JsonResponse
+from pokemon.models import Pokemon, Evolution
+class PokemonDetails(APIView):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint to show Pokemon details from name
     """
-    serializer_class = PokemonSerializer
-    name='pokemon_details'
-    
-    def get_queryset(self):
-        """
-        This view should return a list of all the purchases
-        for the currently authenticated user.
-        """
-        name = self.kwargs['name']
-        objects=Evolution.objects.filter(id_chain=18).values_list('pokemon_id','evolves_to')
-        
-        return Pokemon.objects.filter(name=name)
+    def get(self, request, name, format=None, **kwargs):
+        try:
+            obj=Pokemon.objects.filter(name=name).values()
+            if obj:
+                id_pokemon=obj[0].get('pokemon')
+                evlist=Evolution.objects.filter(pokemon=id_pokemon).values()
+                return JsonResponse({
+                    'pokemon_info': list(obj),
+                    'evolution': list(evlist),
+                })
+            else:
+                return JsonResponse({
+                'Error': 'Pokemon doesnt exist!',
+            })
+        except Exception as e: 
+            return JsonResponse({
+                'Error': e,
+            })
 

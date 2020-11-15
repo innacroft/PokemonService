@@ -50,7 +50,7 @@ class Create_get_pokemon:
             
             ev=Evolution.objects.filter(id_chain=data['id'])
             for element in ev:
-                element.chain_evol=self.val
+                element.chain_evol=self.evol
                 element.save()
             
             

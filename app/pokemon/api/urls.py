@@ -6,5 +6,5 @@ from .views import PokemonDetails
 
 urlpatterns = [
     # Forms
-    path('pokemon/<str:name>/', PokemonDetails.as_view(), name=PokemonDetails.name),
+    path('pokemon/<str:name>/', PokemonDetails.as_view(), name='pokemon_details'),
 ]
