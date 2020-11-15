@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from ...views import Create_pokemon
+from ...views import Create_get_pokemon
 
 class Command(BaseCommand):
     help = 'Command description'
@@ -11,10 +11,15 @@ class Command(BaseCommand):
         
 
     def handle(self, *args, **kwargs):
-        argument1= kwargs['create']
-        argument2= kwargs['search']
+        create= kwargs['create']
+        search= kwargs['search']
        # argument3= kwargs['argument3']
-        if  argument1:
-            create=Create_pokemon(argument1)
+        if  create:
+            print(f'Creating evolution chain and respective pokemons with Evolution Chain ID : {create}')
+            create=Create_get_pokemon(create, True)
+
+        if  search:
+            print(f'Searching evolution chain and respective pokemons with Evolution Chain ID : {search}')
+            create=Create_get_pokemon(search, False)
         
         
