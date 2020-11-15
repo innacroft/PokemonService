@@ -28,6 +28,7 @@ class Create_get_pokemon:
         self.evolution={}
         self.items_=[]
         self.last_value=''
+        self.val=[]
         self.t = PrettyTable(['Id', 'Name','HP', 'Weight','Height', 'Attack','Defense',
             'Special_attack','Special defense', 'Speed','Is Baby?',  'Id Chain evolution']) 
         self.t2 = PrettyTable(['Evolution list']) 
@@ -35,14 +36,24 @@ class Create_get_pokemon:
             data=response.json()
             self.chain_id=data['id'] #chain evolution
             self.recursive_(data['chain'],'')  #get all info of each evolution including names of each pokemon
+            self.evol=''
             print(self.t)
             
             counter=0
+            
             for key, val in self.evolution.items():
-                evol=str(val).replace(',','--->').replace('[',' ').replace(']','').replace('\'','')
-                self.t2.add_row([evol])
+                self.evol=str(val).replace(',','--->').replace('[',' ').replace(']','').replace('\'','')
+                self.t2.add_row([ self.evol ])
+                self.val.append(val)
                 counter+=1
             print(self.t2)
+            
+            ev=Evolution.objects.filter(id_chain=data['id'])
+            for element in ev:
+                element.chain_evol=self.val
+                element.save()
+            
+            
         else:
             print('--> Ops !, Something went wrong with request, Error No:',response.status_code)
 

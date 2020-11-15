@@ -20,6 +20,9 @@ class Evolution(models.Model):
     id_chain=models.IntegerField(default=0,verbose_name="Evolution_chain")
     pokemon=models.ForeignKey(Pokemon, on_delete=models.CASCADE, default=0)
     evolves_to=models.IntegerField(default=0,verbose_name="ID next evolution")
+    chain_evol=models.TextField(default='')
+
+
 
 
     
