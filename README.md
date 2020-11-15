@@ -2,7 +2,8 @@
 # POKEMON API INTEGRATION
 ![Ya disponible el Pikachu con la gorra de Ash en la temporada de Hoenn |  Pokémon Alpha](https://pokemonalpha.xyz/wp-content/uploads/2020/10/pikachu-gorra-hoenn.jpg)
 
-Consumed Pokemon API avaliable on  https://pokeapi.co/docs/v2 
+Consumed Pokemon API avaliable on  https://pokeapi.co/docs/v2
+
 This application creates and shows avaliable Pokemons grouped by Pokemon Evolution Chain, gets main details for each Pokemon and shows evolution chains for each Pokemon via console on python-django.
 
 ## Technologies:
